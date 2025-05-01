@@ -1,5 +1,10 @@
 pipeline {
     agent { label 'kube-agent' }
+
+    triggers {
+        githubPush()  // This triggers the build on git push
+    }
+    
     environment {
         AWS_REGION = 'us-east-1'
         ECR_REPO = 'test'
