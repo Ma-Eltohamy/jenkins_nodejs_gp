@@ -19,7 +19,7 @@ connection.connect(function(err) {
     console.error('Database connection failed: ' + err.stack);
     return;
  }
-	res.send("db connection successfully");
+	res.send("db connection successful");
   console.log('Connected to database.');
 
 connection.end();
