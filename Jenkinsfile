@@ -16,21 +16,21 @@ pipeline {
             }
         }
 
-        stage('Trivy Pre-Scan') {
-            steps {
-                container('kaivy') {
-                    script {
-                        // Fail pipeline if last image has CRITICAL vulns
-                        sh """
-                        trivy image ${URL_REGISTRY}/${ECR_REPO}:latest \
-                        --severity CRITICAL \
-                        --exit-code 0 \
-                        --quiet || echo 'Note: latest image may have CRITICALs'
-                        """
-                    }
-                }
-            }
-        }
+        // stage('Trivy Pre-Scan') {
+        //     steps {
+        //         container('kaivy') {
+        //             script {
+        //                 // Fail pipeline if last image has CRITICAL vulns
+        //                 sh """
+        //                 trivy image ${URL_REGISTRY}/${ECR_REPO}:latest \
+        //                 --severity CRITICAL \
+        //                 --exit-code 0 \
+        //                 --quiet || echo 'Note: latest image may have CRITICALs'
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
 
         // stage('Kaniko build & tag (staging only)') {
         //     steps {
@@ -73,7 +73,7 @@ pipeline {
                         // Push the image if it only passed from trivy
                         sh """
                         /kaniko/executor \
-                          --context=git://github.com/Ma-Eltohamy/jenkins_nodejs_gp.git#rds_redis \
+                          --context=git://github.com/Ma-Eltohamy/jenkins_nodejs_gp.git#master \
                           --destination=${FULL_IMAGE} \
                           --dockerfile=dockerfile
                         """
