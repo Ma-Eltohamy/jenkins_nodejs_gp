@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('SCM Checkout') {
             steps {
-                git branch: 'rds_redis', url: 'https://github.com/mahmoud254/jenkins_nodejs_example.git'
+                git branch: 'master', url: 'https://github.com/Ma-Eltohamy/jenkins_nodejs_gp.git'
             }
         }
 
