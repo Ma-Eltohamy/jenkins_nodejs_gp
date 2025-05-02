@@ -10,7 +10,7 @@ pipeline {
         ECR_REPO = 'test'
         AWS_ACCOUNT_ID = credentials('aws-account-id')
         URL_REGISTRY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-        IMAGE_TAG = "40.${env.BUILD_NUMBER}"
+        IMAGE_TAG = "41.${env.BUILD_NUMBER}"
         FULL_IMAGE = "${URL_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}"
 
         // SONAR_SCANNER_HOME = tool 'sonar-scanner';
