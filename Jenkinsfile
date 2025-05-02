@@ -13,7 +13,7 @@ pipeline {
         IMAGE_TAG = "40.${env.BUILD_NUMBER}"
         FULL_IMAGE = "${URL_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}"
 
-        SONAR_SCANNER_HOME = tool 'sonar-scanner';
+        // SONAR_SCANNER_HOME = tool 'sonar-scanner';
 
     }
 
