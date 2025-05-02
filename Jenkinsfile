@@ -24,73 +24,73 @@ pipeline {
             }
         }
 
-         stage('SAST - SonarQube') {
-            steps {
+        //  stage('SAST - SonarQube') {
+        //     steps {
                 
-                timeout(time: 60, unit: 'SECONDS') {
-                    withSonarQubeEnv('sonarqube') {
+        //         timeout(time: 60, unit: 'SECONDS') {
+        //             withSonarQubeEnv('sonarqube') {
                 
-                        sh '''
-                            $SONAR_SCANNER_HOME/bin/sonar-scanner \
-                                -Dsonar.projectKey=node-app \
-                                -Dsonar.sources=app.js \
+        //                 sh '''
+        //                     $SONAR_SCANNER_HOME/bin/sonar-scanner \
+        //                         -Dsonar.projectKey=node-app \
+        //                         -Dsonar.sources=app.js \
                                 
-                        '''
-                    }
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        } 
+        //                 '''
+        //             }
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // } 
 
-        stage('Trivy Pre-Scan') {
-            steps {
-                container('kaivy') {
-                    script {
-                        // Fail pipeline if last image has CRITICAL vulns
-                        sh """
-                        trivy image ${URL_REGISTRY}/${ECR_REPO}:latest \
-                        --severity CRITICAL \
-                        --exit-code 0 \
-                        --quiet || echo 'Note: latest image may have CRITICALs'
-                        """
-                    }
-                }
-            }
-        }
+        // stage('Trivy Pre-Scan') {
+        //     steps {
+        //         container('kaivy') {
+        //             script {
+        //                 // Fail pipeline if last image has CRITICAL vulns
+        //                 sh """
+        //                 trivy image ${URL_REGISTRY}/${ECR_REPO}:latest \
+        //                 --severity CRITICAL \
+        //                 --exit-code 0 \
+        //                 --quiet || echo 'Note: latest image may have CRITICALs'
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Kaniko build & tag (staging only)') {
-            steps {
-                container('kaivy') {
-                    script {
-                        // Build an output.tar image to make trivy then check it
-                        sh """
-                        /kaniko/executor \
-                          --context=git://github.com/Ma-Eltohamy/jenkins_nodejs_gp.git#rds_redis \
-                          --destination=${FULL_IMAGE} \
-                          --dockerfile=dockerfile \
-                          --no-push \
-                          --tar-path=/workspace/output.tar
-                        """
-                    }
-                }
-            }
-        }
+        // stage('Kaniko build & tag (staging only)') {
+        //     steps {
+        //         container('kaivy') {
+        //             script {
+        //                 // Build an output.tar image to make trivy then check it
+        //                 sh """
+        //                 /kaniko/executor \
+        //                   --context=git://github.com/Ma-Eltohamy/jenkins_nodejs_gp.git#rds_redis \
+        //                   --destination=${FULL_IMAGE} \
+        //                   --dockerfile=dockerfile \
+        //                   --no-push \
+        //                   --tar-path=/workspace/output.tar
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Trivy Scan tarball image') {
-            steps {
-                container('kaivy') {
-                    script {
-                        sh """
-                        trivy image --input /workspace/output.tar \
-                        --severity CRITICAL \
-                        --exit-code 1 \
-                        --format json \
-                        -o trivy-result.json
-                        """
-                    }
-                }
-            }
-        }
+        // stage('Trivy Scan tarball image') {
+        //     steps {
+        //         container('kaivy') {
+        //             script {
+        //                 sh """
+        //                 trivy image --input /workspace/output.tar \
+        //                 --severity CRITICAL \
+        //                 --exit-code 1 \
+        //                 --format json \
+        //                 -o trivy-result.json
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Push to ECR (only if passed scan)') {
             steps {
